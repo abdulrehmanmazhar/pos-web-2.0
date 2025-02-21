@@ -53,7 +53,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
         background-color: #fff;
         border: 1px solid #ddd;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        font-size: 0.75em;
+        font-size: 0.80em;
     ">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.85em; padding: 5px 0;">
             <div style="width: 35px; height: 35px; background-color: #ddd; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 4px;"><img src=${logo} alt="Girl in a jacket" width="500" height="600"></div>
@@ -67,7 +67,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
                 <div>Phone: +92 340 4646799</div>
             </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 0.75em; margin: 5px 0;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.80em; margin: 5px 0;">
             <div>
                 <p><strong>Order Booker:</strong> ${element[0].userDetails.name}</p>
                 </div>
@@ -76,7 +76,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
                 <p><strong>Delivery Date:</strong> ${new Date(element[0].deliveryDate).toLocaleDateString('en-GB')}</p>
             </div>
         </div>
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.75em;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.90em;">
             <thead>
                 <tr>
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">#</th>
@@ -104,7 +104,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
             </tbody>
         </table>
 <p><strong>Summary:</strong></p>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.75em;">
+<table style="width: 100%; border-collapse: collapse; font-size: 0.90em;">
     <thead>
         <tr>
         ${uniqueCategories.map((category) => `
@@ -126,7 +126,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
 </table>
 
 <p><strong>Product Breakdown:</strong></p>
-<table style="width: 100%; border-collapse: collapse; font-size: 0.75em; margin-top: 10px;">
+<table style="width: 100%; border-collapse: collapse; font-size: 0.90em; margin-top: 10px;">
     <thead>
         <tr>
             <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">Category</th>
@@ -156,7 +156,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
     </tbody>
 </table>
 
-        <div style="text-align: right; font-size: 0.75em; margin-top: 5px;">
+        <div style="text-align: right; font-size: 0.90em; margin-top: 5px;">
             <div>Subtotal: PKR ${element.reduce((sum,item)=>sum+item.price,0)}</div>
             <div>Total Discounts: PKR ${-element.reduce((sum,item)=>sum+item.discount,0)}</div>
             <div style="font-weight: bold;">Expected Total Cash: PKR ${element.reduce((sum,item)=>sum+item.price,0)-element.reduce((sum,item)=>sum+item.discount,0)}</div>

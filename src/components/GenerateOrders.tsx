@@ -119,6 +119,7 @@ const GenerateOrder = ({selectedItems}) => {
 // </div>
 
 // `).join("");
+// font-family: 'Courier New', monospace;
 
 
 const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element => {
@@ -130,7 +131,6 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
     padding: 0;
     overflow: auto;
     background-color: #f9f9f9;
-    font-family: 'Courier New', monospace;
 ">
     <div style="
         width: 95%;
@@ -144,19 +144,19 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
         <div style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.85em; padding: 5px 0;">
             <div style="width: 35px; height: 35px; background-color: #ddd; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 4px;"><img src=${logo} alt="Girl in a jacket" width="500" height="600"></div>
         <div style="text-align: center;">
-        <h1 style="font-family: Arial, sans-serif; font-size: 1.1em; margin: 0; color: #333;"><strong>INVOICE</strong></h1>
+                <h1 style="font-family: Arial, sans-serif; font-size: 1.1em; margin: 0; color: #333;"><strong>SATTAR ENTERPRISES HAFIZABAD</strong></h1>
+        <h1 style="font-family: Arial, sans-serif; font-size: 1.1em; margin: 0; color: #333;"><strong>INVOICE OG-COLA</strong></h1>
         <p>order no. ${element.orderNumber}</p>
         </div>
             <div style="text-align: right;">
-                <div><strong>Sattar Enterprises</strong></div>
                 <div>Kolo Road Hafizabad</div>
-                <div>Phone: +92 340 4646799</div>
+                <div><strong>Contact Us</strong> +92 347 3919512</div>
             </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-size: 0.75em; margin: 5px 0;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.80em; margin: 5px 0;">
             <div>
-                <p><strong>Business Name:</strong>${element.customerDetails.businessName}</p>
-                <p><strong>Customer:</strong>${element.customerDetails.name}</p>
+                <p><strong>Business Name:</strong> ${element.customerDetails.businessName}</p>
+                <p><strong>Customer:</strong> ${element.customerDetails.name}</p>
                 <p><strong>Contact:</strong> ${element.customerDetails.contact}</p>
                 <p><strong>Address:</strong> ${element.customerDetails.address}</p>
                 </div>
@@ -167,7 +167,7 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
                 <p><strong>Previous Dues:</strong> PKR ${element.customerDetails?.udhar || 0}</p>
             </div>
         </div>
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.75em;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.80em;">
             <thead>
                 <tr>
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">#</th>
@@ -190,7 +190,7 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
             </tbody>
         </table>
         <p><strong>Message:</strong> ${element.message}</p>
-        <div style="text-align: right; font-size: 0.75em; margin-top: 5px;">
+        <div style="text-align: right; font-size: 0.8em; margin-top: 5px;">
             <div>Subtotal: PKR ${element.price}</div>
             <div>Tax (0%): PKR 0</div>
             <div>Discounts: PKR ${element.discount}</div>
