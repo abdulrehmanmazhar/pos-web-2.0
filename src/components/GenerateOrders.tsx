@@ -142,15 +142,19 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
         font-size: 0.75em;
     ">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.85em; padding: 5px 0;">
-            <div style="width: 35px; height: 35px; background-color: #ddd; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 4px;"><img src=${logo} alt="Girl in a jacket" width="500" height="600"></div>
+        <div style="text-align: center; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="width: 35px; height: 35px; background-color: #ddd; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 4px;"><img src=${logo} alt="OG" width="500" height="600"></div>
+        <p style="font-size: 8px">میں ہوں پاکستانی</p>
+        </div>
         <div style="text-align: center;">
                 <h1 style="font-family: Arial, sans-serif; font-size: 1.1em; margin: 0; color: #333;"><strong>SATTAR ENTERPRISES HAFIZABAD</strong></h1>
         <h1 style="font-family: Arial, sans-serif; font-size: 1.1em; margin: 0; color: #333;"><strong>INVOICE OG-COLA</strong></h1>
-        <p>order no. ${element.orderNumber}</p>
+        <p>order no. <strong>${element.orderNumber}</strong></p>
         </div>
             <div style="text-align: right;">
                 <div>Kolo Road Hafizabad</div>
                 <div><strong>Contact Us</strong> +92 347 3919512</div>
+                <div><strong>(For Services logding Complaints)</strong></div>
             </div>
         </div>
         <div style="display: flex; justify-content: space-between; font-size: 0.80em; margin: 5px 0;">
