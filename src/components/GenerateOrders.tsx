@@ -143,7 +143,7 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
     ">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.85em; padding: 5px 0;">
         <div style="text-align: center; display: flex; justify-content: center; align-items: center; flex-direction: column;">
-        <div style="width: 35px; height: 35px; background-color: #ddd; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 4px;"><img src=${logo} alt="OG" width="500" height="600"></div>
+        <div style="width: 45px; height: 45px; background-color: #ddd; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 4px;"><img src=${logo} alt="OG" width="500" height="600"></div>
         <p style="font-size: 8px">میں ہوں پاکستانی</p>
         </div>
         <div style="text-align: center;">
