@@ -179,7 +179,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
 
   const options = {
     margin: 0,  // No extra margin from html2pdf
-    filename: "A4_two_boxes.pdf",
+    filename: `Route Cards ${new Date(Date.now()).toLocaleDateString('en-GB')}.pdf`,
     image: { type: "jpeg", quality: 0.95 }, 
     html2canvas: { scale: 2 },
     jsPDF: { unit: "px", format: [794, 1123], orientation: "portrait" }

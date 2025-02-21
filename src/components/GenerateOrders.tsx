@@ -220,7 +220,7 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
 
   const options = {
     margin: 0,  // No extra margin from html2pdf
-    filename: "A4_two_boxes.pdf",
+    filename: `Orders ${new Date(Date.now()).toLocaleDateString('en-GB')}.pdf`,
     image: { type: "jpeg", quality: 0.95 }, 
     html2canvas: { scale: 2 },
     jsPDF: { unit: "px", format: [794, 1123], orientation: "portrait" }
