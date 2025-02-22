@@ -400,7 +400,7 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
     .save()
     .catch((error: any) => {
       console.error("Error generating PDF:", error);
-    //   toast.error("Failed to generate PDF.");
+      toast.error("Failed to generate PDF.");
     });
     }
 

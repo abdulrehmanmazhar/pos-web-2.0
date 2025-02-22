@@ -3,6 +3,7 @@ import logo from '../assets/logo.png';
 import { useSelector } from 'react-redux';
 import { selectCurrentOrders } from '../redux/slices/orderSlice';
 import { objectCollector } from '../utils/objectCollector';
+import { toast } from 'react-toastify';
 const GenerateRouteCard = ({selectedItems}) => {
     const orders = useSelector(selectCurrentOrders);
     // console.log(orders)
@@ -189,9 +190,10 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
     .from(orderHTML)
     .set(options)
     .save()
+    .then(toast.success('PDF generated successfully'))
     .catch((error: any) => {
       console.error("Error generating PDF:", error);
-    //   toast.error("Failed to generate PDF.");
+      toast.error("Failed to generate PDF.");
     });
     }
     return(
