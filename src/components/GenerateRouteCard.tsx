@@ -83,6 +83,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">#</th>
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">Order no.</th>
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">Business Name</th>
+                    <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">Name</th>
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">Address</th>
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">Total Items</th>
                     <th style="padding: 5px; border: 1px solid #ddd; background-color: #f4f4f4;">Price</th>
@@ -95,6 +96,7 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
                     <td style="padding: 5px; border: 1px solid #ddd;">${index + 1}</td>
                     <td style="padding: 5px; border: 1px solid #ddd;">${order.orderNumber}</td>
                     <td style="padding: 5px; border: 1px solid #ddd;">${order.customerDetails.businessName}</td>
+                    <td style="padding: 5px; border: 1px solid #ddd;">${order.customerDetails.name}</td>
                     <td style="padding: 5px; border: 1px solid #ddd;">${order.customerDetails.address}</td>
                     <td style="padding: 5px; border: 1px solid #ddd;">${order.cart.reduce((sum, item) => sum + item.qty, 0)}</td>
                     <td style="padding: 5px; border: 1px solid #ddd;">${order.price - order.discount}</td>

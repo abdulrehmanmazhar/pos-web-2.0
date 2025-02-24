@@ -58,7 +58,7 @@ const OrderFilterModal: React.FC<FilterModalProps> = ({ toggleModal }) => {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
-      <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg max-w-md w-full">
+      <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg max-w-lg w-full">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
@@ -69,12 +69,12 @@ const OrderFilterModal: React.FC<FilterModalProps> = ({ toggleModal }) => {
         </div>
 
         {/* Modal Body */}
-        <div className="flex p-4 justify-around">
+        <div className="flex flex-col p-4 justify-around">
 
           {/* Routes Selection */}
           <div>
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Routes</h4>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-row flex-wrap gap-2">
               {routes.map((route, index) => (
                 <li
                   key={index}
@@ -92,7 +92,7 @@ const OrderFilterModal: React.FC<FilterModalProps> = ({ toggleModal }) => {
           {/* Created By Selection */}
           <div>
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Created By</h4>
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-row flex-wrap gap-2">
               {creators.map((creator, index) => (
                 <li
                   key={index}
