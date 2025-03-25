@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials, logout } from "../slices/authSlice";
 
-export const baseUrl = 'https://pos-server-20-production.up.railway.app/api/v1'
+export const baseUrl = 'https://pos-server-2-0.onrender.com/api/v1'
 const baseQuery = fetchBaseQuery({
     baseUrl,
     // : 'https://pos-server-2-0.onrender.com/api/v1',
