@@ -4,7 +4,7 @@ import { setCredentials, logout } from "../slices/authSlice";
 export const baseUrl = 'https://pos-server-20-production.up.railway.app/api/v1'
 const baseQuery = fetchBaseQuery({
     baseUrl,
-    // : 'https://pos-server-20-production.up.railway.app/api/v1',
+    // : 'https://pos-server-2-0.onrender.com/api/v1',
     credentials: 'include',
     prepareHeaders:(headers, {getState})=>{
         const token = getState().auth.token
