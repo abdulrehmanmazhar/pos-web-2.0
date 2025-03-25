@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import {QRCodeSVG} from 'qrcode.react';
 // import { baseUrl } from '../redux/apis/apiSlice';
-const socket = io('https://pos-server-20-production.up.railway.app'); // Connect to backend WebSocket
+const socket = io('https://pos-server-2-0.onrender.com'); // Connect to backend WebSocket
 
 const WhatsAppQR = () => {
     const [qrCode, setQrCode] = useState('');
