@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import DetailModal from "../components/DetailModal";
 import FilterModal from "../components/FilterModal";
 import { objectCollector } from "../utils/objectCollector";
+import GenerateCustomerCards from "../components/GenerateCustomerCards";
 function Customers() {
   const [addCustomerModal, setAddCustomerModal] = useState(false);
   const [editCustomerModal, setEditCustomerModal] = useState(false);
@@ -53,7 +54,7 @@ function Customers() {
   };
 
 
-  const { error, isError, isLoading, refetch } = useGetAllCustomersQuery();
+  const { data: allCustomers, error, isError, isLoading, refetch } = useGetAllCustomersQuery();
 
   const rowsPerPage = useSelector(selectCurrentCustomerRowsPerPage);
   const pageIndex = useSelector(selectCurrentCustomerPageIndex);
@@ -281,12 +282,26 @@ function Customers() {
         </button>
       </div>
 
+      {/* Print bills  */}
+            {selectedItems?.size>0&&<div className="fixed bottom-4 left-24 flex justify-center items-center mt-4 space-x-4">
+              <GenerateCustomerCards selectedItems={selectedItems}/>
+            </div>}
+
       {/* Modal  */}
       {addCustomerModal && <AddCustomerModal toggleModal={()=>(toggleModal('add'))} />}
       {deleteCustomerModal && <DeleteCustomerModal toggleModal={()=>(toggleModal('delete'))} message="Do you want to delete this customer" ok={okDelete}/>}
       {editCustomerModal && <EditCustomerModal toggleModal={()=>(toggleModal('edit'))} details={editItemDetails}/>}
       {detailCustomerModal && <DetailModal toggleModal={()=>(toggleModal('detail'))}/>}
-      {filterCustomerModal && <FilterModal toggleModal={()=>(toggleModal('filter'))} routes={customers?objectCollector(customers, 'route'): []}/>}
+      {filterCustomerModal && <FilterModal toggleModal={()=>(toggleModal('filter'))} routes={customers?objectCollector(allCustomers.customers.map((item) => ({
+      id: item._id,
+      name: item.name,
+      businessName: item.businessName,
+      contact: item.contact,
+      address: item.address,
+      udhar: item.udhar === undefined ? 'Nil' : item.udhar,
+      route: item.route,
+      createdBy: item.createdByUser?.name || "N/A",
+    })), 'route'): []}/>}
     </div>
   );
 }

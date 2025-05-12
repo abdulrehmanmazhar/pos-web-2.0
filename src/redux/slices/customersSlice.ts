@@ -109,6 +109,7 @@ export const { setCustomers, setSearch, setRoute, setOrder, setRowsPerPage, next
 export const selectCustomersState = (state) => state.customers;
 export const selectCurrentCustomers = (state) => state.customers.customers;
 export const selectCurrentCustomerSearch = (state) => state.customers.search;
+export const selectCurrentCustomerRoute = (state) => state.customers.route;
 export const selectCurrentCustomerPageIndex = (state) => state.customers.pageIndex;
 export const selectCurrentCustomerMaxPages = (state) => state.customers.maxPages;
 export const selectCurrentCustomerRowsPerPage = (state) => state.customers.rowsPerPage;

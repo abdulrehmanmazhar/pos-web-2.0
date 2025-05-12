@@ -1,10 +1,10 @@
 import { createSelector } from "reselect";
-import { selectCurrentCustomers, selectCurrentCustomerSearch, selectCurrentCustomerMaxPages, selectCurrentCustomerPageIndex, selectCurrentCustomerRowsPerPage } from "../customersSlice";
+import { selectCurrentCustomers, selectCurrentCustomerSearch, selectCurrentCustomerMaxPages, selectCurrentCustomerPageIndex, selectCurrentCustomerRowsPerPage, selectCurrentCustomerRoute } from "../customersSlice";
 import { paginator } from "../../../utils/paginator";
 
 export const filteredCustomers = createSelector(
-  [selectCurrentCustomers, selectCurrentCustomerSearch, selectCurrentCustomerMaxPages, selectCurrentCustomerPageIndex,selectCurrentCustomerRowsPerPage],
-  (customers, search, maxPages, pageIndex, rowsPerPage) => {
+  [selectCurrentCustomers, selectCurrentCustomerSearch, selectCurrentCustomerMaxPages, selectCurrentCustomerPageIndex,selectCurrentCustomerRowsPerPage, selectCurrentCustomerRoute],
+  (customers, search, maxPages, pageIndex, rowsPerPage, route) => {
 
 
     // Always map the customers, but filter if there's a search query
@@ -18,7 +18,13 @@ export const filteredCustomers = createSelector(
         )
       : customers;
 
-      const paginated = paginator(filteredList, Number(rowsPerPage));
+            const RouteFiltered = filteredList.filter((item)=>{
+        if (!route || !item.route) return item; // Handles null/undefined cases
+        
+        return item?.route === route;
+      })
+
+      const paginated = paginator(RouteFiltered, Number(rowsPerPage));
       const requiredPage = paginated[pageIndex-1];
     //   console.log(requiredPage);
 

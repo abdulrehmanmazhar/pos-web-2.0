@@ -58,7 +58,7 @@ const OrderFilterModal: React.FC<FilterModalProps> = ({ toggleModal }) => {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
-      <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg max-w-lg w-full">
+      <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg max-w-4xl w-full">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
