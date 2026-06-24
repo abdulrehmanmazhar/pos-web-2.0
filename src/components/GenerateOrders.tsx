@@ -263,36 +263,95 @@ const GenerateOrder = ({selectedItems}) => {
 
     console.log(selectedOrders); // This will log only the selected orders
 
+    function calcCartTotals(cart) {
+        const subtotal = cart.reduce(
+            (acc, item) => acc + (item.product?.price ?? 0) * (item.qty ?? 0),
+            0
+        );
+        const productDiscount = cart.reduce(
+            (acc, item) => acc + (item.product?.discount ?? 0) * (item.qty ?? 0),
+            0
+        );
+        return { subtotal, productDiscount, pageTotal: subtotal - productDiscount };
+    }
+
+    function getAdditionalDiscount(order) {
+        const productDiscount = order.cart.reduce(
+            (acc, item) => acc + (item.product?.discount ?? 0) * (item.qty ?? 0),
+            0
+        );
+        return Math.max((order.discount ?? 0) - productDiscount, 0);
+    }
+
     function splitOrdersByCartLimit(orders, cartLimit) {
         const newOrders = [];
-        
-        orders.forEach(order => {
+
+        orders.forEach((order) => {
+            const chunks = [];
             if (order.cart.length <= cartLimit) {
-                newOrders.push(order);
+                chunks.push(order.cart);
             } else {
-                let remainingCart = [...order.cart];
+                const remainingCart = [...order.cart];
                 while (remainingCart.length > cartLimit) {
-                    newOrders.push({
-                        ...order,
-                        cart: remainingCart.splice(0, cartLimit)
-                    });
+                    chunks.push(remainingCart.splice(0, cartLimit));
                 }
                 if (remainingCart.length) {
-                    newOrders.push({
-                        ...order,
-                        cart: remainingCart
-                    });
+                    chunks.push(remainingCart);
                 }
             }
+
+            const totalParts = chunks.length;
+            chunks.forEach((cart, index) => {
+                newOrders.push({
+                    ...order,
+                    cart,
+                    invoicePart: index + 1,
+                    invoiceParts: totalParts,
+                    isLastPart: index === totalParts - 1,
+                });
+            });
         });
-        
+
         return newOrders;
     }
-    
+
+    function renderTotalsSection(element) {
+        const { subtotal, productDiscount, pageTotal } = calcCartTotals(element.cart);
+        const additionalDiscount = getAdditionalDiscount(element);
+        const orderGrandTotal = (element.price ?? 0) - (element.discount ?? 0);
+        const isMultiPart = element.invoiceParts > 1;
+
+        if (!isMultiPart) {
+            return `
+            <div>Subtotal: PKR ${subtotal}</div>
+            <div>Tax (0%): PKR 0</div>
+            <div>Discounts: PKR ${element.discount ?? productDiscount}</div>
+            <div style="font-weight: bold;">Grand Total: PKR ${orderGrandTotal}</div>`;
+        }
+
+        let html = `
+            <div>Subtotal (this page): PKR ${subtotal}</div>
+            <div>Discounts (this page): PKR ${productDiscount}</div>
+            <div style="font-weight: bold;">Page Total: PKR ${pageTotal}</div>`;
+
+        if (element.isLastPart) {
+            html += `
+            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #ddd;">
+                ${additionalDiscount > 0 ? `<div>Additional Discount: PKR ${additionalDiscount}</div>` : ""}
+                <div>Order Subtotal: PKR ${element.price}</div>
+                <div>Order Discounts: PKR ${element.discount}</div>
+                <div style="font-weight: bold;">Grand Total: PKR ${orderGrandTotal}</div>
+            </div>`;
+        } else {
+            html += `<p style="font-size: 0.75em; color: #666; margin-top: 6px;">Invoice part ${element.invoicePart} of ${element.invoiceParts} — continued on next page</p>`;
+        }
+
+        return html;
+    }
+
     const downloadPDF = (selectedOrders) =>{
 
-const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element => {
-    return Object.values(`
+const invoices = splitOrdersByCartLimit(selectedOrders, 10).map((element) => `
 <div style="
     width: 100%; 
     height: 561.5px; 
@@ -318,7 +377,7 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
         <div style="text-align: center;">
                 <h1 style="font-family: Arial, sans-serif; font-size: 1.1em; margin: 0; color: #333;"><strong>SATTAR ENTERPRISES HAFIZABAD</strong></h1>
         <h1 style="font-family: Arial, sans-serif; font-size: 1.1em; margin: 0; color: #333;"><strong>INVOICE MASTER-COLA</strong></h1>
-        <p>order no. <strong>${element.orderNumber}</strong></p>
+        <p>order no. <strong>${element.orderNumber}</strong>${element.invoiceParts > 1 ? ` &nbsp;|&nbsp; Part ${element.invoicePart} of ${element.invoiceParts}` : ""}</p>
         </div>
             <div style="text-align: right;">
                 <div>Kolo Road Hafizabad</div>
@@ -364,19 +423,14 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
         </table>
         <p><strong>Message:</strong> ${element.message}</p>
         <div style="text-align: right; font-size: 0.8em; margin-top: 5px;">
-            <div>Subtotal: PKR ${element.price}</div>
-            <div>Tax (0%): PKR 0</div>
-            <div>Discounts: PKR ${element.discount}</div>
-            <div style="font-weight: bold;">Grand Total: PKR ${element.price-element.discount}</div>
+            ${renderTotalsSection(element)}
         </div>
         <div style="text-align: center; font-size: 0.7em; color: #888; margin-top: 5px;">
             <p>Thank you for your business!</p>
         </div>
     </div>
 </div>
-`)
-.join("")
-});
+`);
         const orderHTML = 
         `  <div style="
     width: 778px; 
