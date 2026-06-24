@@ -1,10 +1,11 @@
 import html2pdf from 'html2pdf.js';
 import logo from '../assets/logo.png';
-import { useSelector } from 'react-redux';
-import { selectCurrentOrders } from '../redux/slices/orderSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { markOrdersAsRouteCardGenerated, selectCurrentOrders } from '../redux/slices/orderSlice';
 import { objectCollector } from '../utils/objectCollector';
 import { toast } from 'react-toastify';
 const GenerateRouteCard = ({selectedItems}) => {
+    const dispatch = useDispatch();
     const orders = useSelector(selectCurrentOrders);
     // console.log(orders)
     const getSelectedOrders = (selectedItems, orders) => {
@@ -192,7 +193,10 @@ const invoices = Array.from(groupOrders(selectedOrders), (element,index) => {
     .from(orderHTML)
     .set(options)
     .save()
-    .then(toast.success('PDF generated successfully'))
+    .then(() => {
+      dispatch(markOrdersAsRouteCardGenerated([...selectedItems]));
+      toast.success('PDF generated successfully');
+    })
     .catch((error: any) => {
       console.error("Error generating PDF:", error);
       toast.error("Failed to generate PDF.");

@@ -18,13 +18,21 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                         },
             providesTags: ["Orders"],
         }),
+        createOrder: builder.mutation({
+            query: data =>({
+                url: `/create-order/${data.id}`,
+                method: 'POST',
+                body: {...data}
+            }),
+            invalidatesTags: ["Orders", "Inventories"],
+        }),
         addCart: builder.mutation({
             query: data =>({
                 url: `/fill-cart/${data.id}`,
                 method: 'POST',
                 body: {...data}
             }),
-            invalidatesTags: ["Orders"],
+            invalidatesTags: ["Orders", "Inventories"],
         }),
         deleteCart: builder.mutation({
             query: data =>({
@@ -39,7 +47,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body:{...data}
             }),
-            invalidatesTags: ["Orders"],
+            invalidatesTags: ["Orders", "Inventories"],
         }),
         deleteOrder: builder.mutation({
             query: id =>({
@@ -54,7 +62,7 @@ export const orderApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body:{...data}
             }),
-            invalidatesTags: ["Orders"],
+            invalidatesTags: ["Orders", "Customers"],
         }),
         returnOrderUdhar: builder.mutation({
             query: data =>({
@@ -67,4 +75,4 @@ export const orderApiSlice = apiSlice.injectEndpoints({
     })
 })
 
-export const {useGetAllOrdersQuery, useAddCartMutation, useDeleteCartMutation, useAddOrderMutation, useDeleteOrderMutation, useAddOrderPaymentMutation, useReturnOrderUdharMutation} = orderApiSlice;
+export const {useGetAllOrdersQuery, useCreateOrderMutation, useAddCartMutation, useDeleteCartMutation, useAddOrderMutation, useDeleteOrderMutation, useAddOrderPaymentMutation, useReturnOrderUdharMutation} = orderApiSlice;

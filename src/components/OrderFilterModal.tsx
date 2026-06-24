@@ -1,11 +1,9 @@
-import React, { useState } from "react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { useGetAllCustomersQuery } from "../redux/slices/customersApiSlice";
+import "react-datepicker/dist/react-datepicker.css";import { useGetAllCustomersQuery } from "../redux/slices/customersApiSlice";
 import { objectCollector } from "../utils/objectCollector";
 import { useGetAllUsersQuery } from "../redux/slices/userApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentOrdersCreatedBySearch, selectCurrentOrdersDeliveryDateSearch, selectCurrentOrdersRouteSearch, setOrdersCreatedBySearch, setOrdersDeliveryDateSearch, setOrdersRouteSearch } from "../redux/slices/orderSlice";
+import { selectCurrentOrdersCreatedBySearch, selectCurrentOrdersDeliveryDateSearch, selectCurrentOrdersRouteSearch, selectExcludeInvoiceGenerated, selectExcludeRouteCardGenerated, selectInvoiceGeneratedOrderIds, selectRouteCardGeneratedOrderIds, setExcludeInvoiceGenerated, setExcludeRouteCardGenerated, setOrdersCreatedBySearch, setOrdersDeliveryDateSearch, setOrdersRouteSearch, clearGeneratedOrderIdFilters } from "../redux/slices/orderSlice";
 
 interface FilterModalProps {
   toggleModal: () => void;
@@ -21,7 +19,10 @@ const OrderFilterModal: React.FC<FilterModalProps> = ({ toggleModal }) => {
   const selectedRoute = useSelector(selectCurrentOrdersRouteSearch);
   const selectedCreator = useSelector(selectCurrentOrdersCreatedBySearch);
   const deliveryDate = useSelector(selectCurrentOrdersDeliveryDateSearch);
-  console.log(deliveryDate);
+  const excludeInvoiceGenerated = useSelector(selectExcludeInvoiceGenerated);
+  const excludeRouteCardGenerated = useSelector(selectExcludeRouteCardGenerated);
+  const invoiceGeneratedOrderIds = useSelector(selectInvoiceGeneratedOrderIds);
+  const routeCardGeneratedOrderIds = useSelector(selectRouteCardGeneratedOrderIds);
 
   const { data: customers } = useGetAllCustomersQuery();
   const { data: users } = useGetAllUsersQuery();
@@ -42,34 +43,35 @@ const OrderFilterModal: React.FC<FilterModalProps> = ({ toggleModal }) => {
   };
 
   const handleDateChange = (date: Date | null) => {
-    // setDeliveryDateState(date);
-    dispatch(setOrdersDeliveryDateSearch(date.toISOString().split("T")[0]));
-
+    dispatch(setOrdersDeliveryDateSearch(date ? date.toISOString().split("T")[0] : ""));
   };
 
   const resetFilters = () => {
     dispatch(setOrdersDeliveryDateSearch(""));
     dispatch(setOrdersCreatedBySearch(""));
     dispatch(setOrdersRouteSearch(""));
+    dispatch(setExcludeInvoiceGenerated(false));
+    dispatch(setExcludeRouteCardGenerated(false));
+  };
 
-
-
+  const clearGeneratedHistory = () => {
+    dispatch(clearGeneratedOrderIdFilters());
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">
-      <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg max-w-4xl w-full">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div className="bg-white dark:bg-gray-700 rounded-lg shadow-lg max-w-4xl w-full max-h-[calc(100vh-2rem)] flex flex-col">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-4 border-b dark:border-gray-600">
+        <div className="flex shrink-0 items-center justify-between p-4 border-b dark:border-gray-600">
           <h3 className="text-xl font-medium text-gray-900 dark:text-white">Filters</h3>
           <button onClick={toggleModal} className="text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 p-2 rounded-lg">
             ✕
           </button>
         </div>
 
-        {/* Modal Body */}
-        <div className="flex flex-col p-4 justify-around">
+        {/* Modal Body — scrollable */}
+        <div className="flex flex-col gap-6 p-4 overflow-y-auto min-h-0">
 
           {/* Routes Selection */}
           <div>
@@ -111,29 +113,62 @@ const OrderFilterModal: React.FC<FilterModalProps> = ({ toggleModal }) => {
           <div>
             <h4 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Delivery Date</h4>
             <DatePicker
-              selected={deliveryDate}
+              selected={deliveryDate ? new Date(deliveryDate) : null}
               onChange={handleDateChange}
               className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-white"
               placeholderText="Select a date"
             />
           </div>
 
+          {/* Generation filters */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-semibold text-gray-800 dark:text-white">Generated Documents</h4>
+
+            <label className="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-800 cursor-pointer">
+              <div>
+                <p className="font-medium text-gray-800 dark:text-white">Hide invoice-generated orders</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {invoiceGeneratedOrderIds.length} order(s) tracked this session
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={excludeInvoiceGenerated}
+                onChange={(e) => dispatch(setExcludeInvoiceGenerated(e.target.checked))}
+                className="w-5 h-5 accent-blue-600"
+              />
+            </label>
+
+            <label className="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-800 cursor-pointer">
+              <div>
+                <p className="font-medium text-gray-800 dark:text-white">Hide route card-generated orders</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {routeCardGeneratedOrderIds.length} order(s) tracked this session
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={excludeRouteCardGenerated}
+                onChange={(e) => dispatch(setExcludeRouteCardGenerated(e.target.checked))}
+                className="w-5 h-5 accent-blue-600"
+              />
+            </label>
+
+            {(invoiceGeneratedOrderIds.length > 0 || routeCardGeneratedOrderIds.length > 0) && (
+              <button
+                type="button"
+                onClick={clearGeneratedHistory}
+                className="text-sm text-red-600 hover:text-red-700 font-medium"
+              >
+                Clear generated order history (this session)
+              </button>
+            )}
           </div>
-          {/* Reset Filters Button */}
-          {/* <div className="w-full flex justify-center mt-4">
-  <button
-    onClick={resetFilters}
-    className="w-1/2 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg px-5 py-2.5 text-sm transition-all mb-4"
-  >
-    Reset Filters
-  </button>
-</div> */}
 
-
-
+        </div>
 
         {/* Modal Footer */}
-        <div className="flex justify-end p-4 border-t dark:border-gray-600">
+        <div className="flex shrink-0 justify-end p-4 border-t dark:border-gray-600">
           <button
             onClick={resetFilters}
             className="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg px-5 py-2 text-sm"

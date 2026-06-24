@@ -8,7 +8,7 @@ import Table from "../components/Table";
 import DeleteModal from "../components/DeleteModal";
 import { toast } from 'react-toastify';
 import DetailModal from "../components/DetailModal";
-import { ordersNext, ordersPrev, selectCurrentOrders, selectCurrentOrdersMaxPages, selectCurrentOrdersPageIndex, selectCurrentOrdersRowsPerPage, setOrdersDate, setOrdersRowsPerPage, setOrdersSearch } from "../redux/slices/orderSlice";
+import { ordersNext, ordersPrev, loadGeneratedOrderIdsFromSession, selectCurrentOrders, selectCurrentOrdersMaxPages, selectCurrentOrdersPageIndex, selectCurrentOrdersRowsPerPage, setOrdersDate, setOrdersRowsPerPage, setOrdersSearch } from "../redux/slices/orderSlice";
 import AddPaymentModal from "../components/AddPaymentModal";
 import GenerateOrder from "../components/GenerateOrders";
 import GenerateRouteCard from "../components/GenerateRouteCard";
@@ -41,6 +41,9 @@ function Orders() {
   const [detail, setDetail] = useState('');
 
   useEffect(()=>{dispatch(setOrdersDate(date))},[date])
+  useEffect(() => {
+    dispatch(loadGeneratedOrderIdsFromSession());
+  }, [dispatch]);
   const handlePrevious = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
     dispatch(ordersPrev())

@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { getDate } from "../utils/getDate";
-
 // Function to generate date labels
 function generateDateLabels(type: string) {
   const currentYear = new Date().getFullYear();
@@ -45,8 +44,42 @@ function Filter({setDate=()=>{}}) {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollAmount = 150;
-  // const setDate = props?.setDate;
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragScrollLeft = useRef(0);
+  const dragDistance = useRef(0);
 
+  const endDrag = useCallback(() => {
+    isDragging.current = false;
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.cursor = "grab";
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging.current || !scrollContainerRef.current) return;
+      const dx = e.clientX - dragStartX.current;
+      dragDistance.current = Math.max(dragDistance.current, Math.abs(dx));
+      scrollContainerRef.current.scrollLeft = dragScrollLeft.current - dx;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", endDrag);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", endDrag);
+    };
+  }, [endDrag]);
+
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current || e.button !== 0) return;
+    isDragging.current = true;
+    dragDistance.current = 0;
+    dragStartX.current = e.clientX;
+    dragScrollLeft.current = scrollContainerRef.current.scrollLeft;
+    scrollContainerRef.current.style.cursor = "grabbing";
+  };
   useEffect(() => {
     if (activeIndex !== null) {
       // console.log(getDate(filterType.toLowerCase(), dateLabels[activeIndex]));
@@ -74,21 +107,24 @@ function Filter({setDate=()=>{}}) {
   };
 
   const handlePillClick = (index: number) => {
+    if (dragDistance.current > 5) return;
     setActiveIndex(index);
   };
-
   return (
-    <div className="flex justify-between items-center mb-4 w-full gap-4 p-4 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden relative">
+    <div className="flex justify-between items-center mb-4 w-full gap-4 p-4 bg-white rounded-xl shadow-lg border border-gray-200 relative">
       {/* Scrollable Pills with Navigation */}
-      <div className="flex items-center w-full flex-grow space-x-2 overflow-hidden">
+      <div className="flex items-center w-full min-w-0 flex-grow space-x-2">
         <button
           onClick={handlePrevious}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition duration-200"
+          className="shrink-0 px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition duration-200"
         >
           &lt;
         </button>
-        <div ref={scrollContainerRef} className="flex gap-2 h-12 mx-2 flex-grow overflow-hidden">
-          {dateLabels.map((label, i) => (
+        <div
+          ref={scrollContainerRef}
+          onMouseDown={handleDragStart}
+          className="flex gap-2 h-12 mx-2 flex-grow min-w-0 overflow-x-auto overflow-y-hidden hide-scrollbar cursor-grab select-none"
+        >          {dateLabels.map((label, i) => (
             <button
               key={i}
               onClick={() => handlePillClick(i)}
@@ -104,14 +140,14 @@ function Filter({setDate=()=>{}}) {
         </div>
         <button
           onClick={handleNext}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition duration-200"
+          className="shrink-0 px-4 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition duration-200"
         >
           &gt;
         </button>
       </div>
 
       {/* Filter Button with Dropdown */}
-      <div className="relative">
+      <div className="relative shrink-0 z-20">
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
           className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-200"
@@ -119,7 +155,7 @@ function Filter({setDate=()=>{}}) {
           Filter
         </button>
         {dropdownOpen && (
-          <div className="absolute right-0 mt-2 w-32 bg-white shadow-md rounded-lg border border-gray-200">
+          <div className="absolute right-0 top-full mt-2 w-32 bg-white shadow-lg rounded-lg border border-gray-200 z-50">
             {["Day", "Month", "Year"].map((option) => (
               <button
                 key={option}

@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { useDispatch } from "react-redux";
-import { selectCurrentOrders, selectCurrentOrdersCreatedBySearch, selectCurrentOrdersDate, selectCurrentOrdersDeliveryDateSearch, selectCurrentOrdersMaxPages, selectCurrentOrdersPageIndex, selectCurrentOrdersRouteSearch, selectCurrentOrdersRowsPerPage, selectCurrentOrdersSearch, setOrdersMaxPage } from "../orderSlice";
+import { selectCurrentOrders, selectCurrentOrdersCreatedBySearch, selectCurrentOrdersDate, selectCurrentOrdersDeliveryDateSearch, selectCurrentOrdersMaxPages, selectCurrentOrdersPageIndex, selectCurrentOrdersRouteSearch, selectCurrentOrdersRowsPerPage, selectCurrentOrdersSearch, selectExcludeInvoiceGenerated, selectExcludeRouteCardGenerated, selectInvoiceGeneratedOrderIds, selectRouteCardGeneratedOrderIds, setOrdersMaxPage } from "../orderSlice";
 import { paginator } from "../../../utils/paginator";
 
 const maxPageSync = (data)=>{
@@ -8,7 +8,7 @@ const maxPageSync = (data)=>{
     dispatch(setOrdersMaxPage(data))
 }
 
-export const filteredOrders = createSelector([selectCurrentOrders, selectCurrentOrdersSearch, selectCurrentOrdersMaxPages, selectCurrentOrdersPageIndex, selectCurrentOrdersRowsPerPage, selectCurrentOrdersDate, selectCurrentOrdersDeliveryDateSearch, selectCurrentOrdersCreatedBySearch, selectCurrentOrdersRouteSearch], (orders,search, maxPages, pageIndex, rowsPerPage, date, deliveryDate, createdBy, route)=>{
+export const filteredOrders = createSelector([selectCurrentOrders, selectCurrentOrdersSearch, selectCurrentOrdersMaxPages, selectCurrentOrdersPageIndex, selectCurrentOrdersRowsPerPage, selectCurrentOrdersDate, selectCurrentOrdersDeliveryDateSearch, selectCurrentOrdersCreatedBySearch, selectCurrentOrdersRouteSearch, selectExcludeInvoiceGenerated, selectExcludeRouteCardGenerated, selectInvoiceGeneratedOrderIds, selectRouteCardGeneratedOrderIds], (orders,search, maxPages, pageIndex, rowsPerPage, date, deliveryDate, createdBy, route, excludeInvoiceGenerated, excludeRouteCardGenerated, invoiceGeneratedOrderIds, routeCardGeneratedOrderIds)=>{
     const filteredList = search
     ? orders.filter((order) =>
         [
@@ -66,9 +66,16 @@ export const filteredOrders = createSelector([selectCurrentOrders, selectCurrent
         return item.customerDetails?.route === route;
       })
 
+      const invoiceExcluded = excludeInvoiceGenerated
+        ? RouteFiltered.filter((item) => !invoiceGeneratedOrderIds.includes(item._id))
+        : RouteFiltered;
+
+      const routeCardExcluded = excludeRouteCardGenerated
+        ? invoiceExcluded.filter((item) => !routeCardGeneratedOrderIds.includes(item._id))
+        : invoiceExcluded;
     
     
-    const paginated = paginator(RouteFiltered, Number(rowsPerPage));
+    const paginated = paginator(routeCardExcluded, Number(rowsPerPage));
     // maxPageSync(paginated?.length || 1)
     const requiredPage = paginated[pageIndex-1];
     return requiredPage?.map(item=>({

@@ -158,6 +158,13 @@ function Layout() {
             onClick={() => setActiveTab("Deliveries")}
           /> */}
           <SidebarItem
+            icon={<ShoppingBag size={20} />}
+            text="POS"
+            to="/sell"
+            active={activeTab === "POS"}
+            onClick={() => setActiveTab("POS")}
+          />
+          <SidebarItem
             icon={<Layers size={20} />}
             text="Inventory"
             active={activeTab === "Inventory"}

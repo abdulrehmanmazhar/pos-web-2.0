@@ -248,11 +248,12 @@
 
 import html2pdf from 'html2pdf.js';
 import logo from '../assets/logo.png';
-import { useSelector } from 'react-redux';
-import { selectCurrentOrders } from '../redux/slices/orderSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { markOrdersAsInvoiceGenerated, selectCurrentOrders } from '../redux/slices/orderSlice';
 import { paginator } from '../utils/paginator';
 import { toast } from 'react-toastify';
 const GenerateOrder = ({selectedItems}) => {
+    const dispatch = useDispatch();
     const orders = useSelector(selectCurrentOrders);
     // console.log(orders)
     const getSelectedOrders = (selectedItems, orders) => {
@@ -409,6 +410,7 @@ const invoices = Array.from(splitOrdersByCartLimit(selectedOrders,10), element =
         for(let splits of splittedArray){
             downloadPDF(splits);
         };
+        dispatch(markOrdersAsInvoiceGenerated([...selectedItems]));
         toast.success("All Invoices generated successfully");
     }
     return(
